@@ -2,18 +2,21 @@
 
 * hưỡng dẫn chạy trang web đầu tiên. 
    1. download và mở project
-   2. cài đặt mongodb: mongod server, mongoshell, mongodb database tool và cài đặt biến môi trường
-      restore file database mongodb : mongorestore --db DB_BTL_Mongodb với thư muc dbs_mongodb\DB_BTL_Mongodb VD: "D:\dbs_mongodb\DB_BTL_Mongodb".
-      ở file appsetting.json  kiểm tra và sửa đổi nếu cần.
-        "MongoDbSettings": {
-           "ConnectionString": "mongodb://127.0.0.1:27017",
-           "DatabaseName": "DB_BTL_Mongodb"
-         },
-   3. Chạy project: mở terminal trong thư mục project chạy lệnh:
+   2. cài đặt mongodb: mongod server, mongoshell, mongodb database tool và cài đặt biến môi trường 
+    
+      - restore file database mongodb : với  thư muc dbs_mongodb\DB_BTL_Mongodb VD:
+      - mongorestore --db DB_BTL_Mongodb "D:\dbs_mongodb\DB_BTL_Mongodb"
+         ở file appsetting.json  kiểm tra và sửa đổi nếu cần.
+           "MongoDbSettings": {
+              "ConnectionString": "mongodb://127.0.0.1:27017",
+              "DatabaseName": "DB_BTL_Mongodb"
+            },
+          - mở cmd lên chạy lệnh mongod
+   4. Chạy project: mở terminal trong thư mục project chạy lệnh:
        dotnet restore.
        dotnet run.
    
-   4. để đăng nhập bằng admin sử dụng tài khoản:
+   5. để đăng nhập bằng admin sử dụng tài khoản:
         tên tài khoản: admin
         mật khẩu : 123456
 
