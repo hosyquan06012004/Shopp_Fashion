@@ -8,8 +8,8 @@
            "DatabaseName": "DB_BTL_Mongodb"
          },
    3. Chạy project: mở terminal trong thư mục project chạy lệnh:
-       dotnet restore
-       dotnet run
+       dotnet restore.
+       dotnet run.
    
    4. để đăng nhập bằng admin sử dụng tài khoản:
         tên tài khoản: admin
