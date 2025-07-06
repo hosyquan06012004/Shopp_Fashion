@@ -1,3 +1,5 @@
+*CÔNG NGHỆ SỬ DỤNG CHÍNH: .Net, Mongodb, Frontend cơ bản và jquery
+
 * hưỡng dẫn chạy trang web đầu tiên. 
    1. download và mở project
    2. cài đặt mongodb: mongod server, mongoshell, mongodb database tool và cài đặt biến môi trường
