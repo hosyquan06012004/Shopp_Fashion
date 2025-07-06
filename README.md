@@ -19,10 +19,12 @@
         tên tài khoản: admin
         mật khẩu : 123456
 
-* một số chức năng đáng chú ý
+* một số chức năng đáng chú ý và cách sử dụng
   1. thêm sản phẩm vào giỏ hàng và thanh toán bằng ví vnpay với môi trường test,
        bạn có thể đi tới đường link để lấy tài khoản ảo (lưu ý: nhập đúng tên ngân hàng , số tài khoản, tên tài khoản):
         https://sandbox.vnpayment.vn/apis/vnpay-demo/
   3. đăng nhập nhanh bằng google cho trang người dùng thay vì phải đăng ký rồi đăng nhập
-  4. phần quyền cho vai trò người dùng ở admin 
-  5. đặt hàng có thông báo gửi email và khi cập nhập lại trạng thái cho đơn hàng cũng sẽ gửi email (lưu ý nhập đúng email của ban để nhận thông báo)
+  4. phần quyền cho vai trò người dùng ở admin
+     + bạn có thể thêm quyền rồi sau đó gán quyền đó cho vai trò
+     + bạn có thể thêm các vài trò rồi gán những vai trò đó cho tài khoản người dùng
+  6. đặt hàng có thông báo gửi email và khi cập nhập lại trạng thái cho đơn hàng cũng sẽ gửi email (lưu ý nhập đúng email của ban để nhận thông báo)
