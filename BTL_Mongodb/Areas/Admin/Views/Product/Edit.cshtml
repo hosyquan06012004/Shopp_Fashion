@@ -1,0 +1,504 @@
+﻿@model BTL_Mongodb.Models.Product
+@using BTL_Mongodb.Models.BusinessModels.ImplementModels
+
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-12">
+    <div class="ibox-content">
+        <h2 class="text-center">Chỉnh sửa sản phẩm</h2>
+        @* <div asp-validation-summary="All" class="text-danger"></div> *@
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+            <input type="hidden" asp-for="Id" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Tên sản phẩm</label>
+                        <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm..." />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label">Giá</label>
+                        <input asp-for="Price" type="number" step="0.01" class="form-control" placeholder="Nhập giá sản phẩm..." />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Danh mục</label>
+                        <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-control">
+                            <option value="">-- Chọn danh mục --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Thương hiệu</label>
+                        <select asp-for="BrandId" asp-items="@ViewBag.Brands" class="form-control">
+                            <option value="">-- Chọn thương hiệu --</option>
+                        </select>
+                        <span asp-validation-for="BrandId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CreatedAt" class="control-label">Ngày tạo</label>
+                        <input asp-for="CreatedAt" type="date" class="form-control" />
+                        <span asp-validation-for="CreatedAt" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="upload-main-image">
+                        <label class="control-label">Ảnh sản phẩm chính</label>
+                        <div class="file-upload">
+                            <button class="file-upload-btn" type="button" onclick="$('.upload-main-image .file-upload-input').trigger('click')">Thay đổi ảnh</button>
+                            <div class="image-upload-wrap" style="@(string.IsNullOrEmpty(Model.Image) ? "" : "display:none;")">
+                                <input name="mainImage" class="file-upload-input" type="file" onchange="readMainImage(this);" accept="image/*" />
+                                <div class="drag-text">
+                                    <h3>Kéo thả ảnh vào đây hoặc chọn Thêm ảnh</h3>
+                                </div>
+                            </div>
+                            <div class="file-upload-content" style="@(string.IsNullOrEmpty(Model.Image) ? "display:none;" : "")">
+                                <img class="file-upload-image" src="@(string.IsNullOrEmpty(Model.Image) ? "#" : Model.Image)" alt="Ảnh sản phẩm chính" />
+                                <div class="image-title-wrap">
+                                    <button type="button" onclick="removeMainImage()" class="remove-image">Xóa <span class="image-title">Ảnh đã chọn</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="upload-additional-images">
+                        <label class="control-label">Ảnh sản phẩm phụ</label>
+                        <div class="file-upload">
+                            <button class="file-upload-btn" type="button" onclick="$('.upload-additional-images .file-upload-input').trigger('click')">Thêm ảnh phụ</button>
+                            <div class="image-upload-wrap" style="@(Model.Images == null || !Model.Images.Any() ? "" : "display:none;")">
+                                <input name="additionalImages" class="file-upload-input" type="file" multiple onchange="readAdditionalImages(this)" accept="image/*" />
+                                <div class="drag-text">
+                                    <h3>Kéo thả ảnh phụ vào đây hoặc chọn Thêm ảnh</h3>
+                                </div>
+                            </div>
+                            <div class="file-upload-content" style="@(Model.Images == null || !Model.Images.Any() ? "display:none;" : "")">
+                                <div id="additionalImagesPreview" class="additional-images-container">
+                                    @if (Model.Images != null && Model.Images.Any())
+                                    {
+                                        @foreach (var img in Model.Images)
+                                        {
+                                            <div class="image-preview" data-url="@img">
+                                                <img src="@img" alt="Ảnh phụ" />
+                                                <div class="remove-btn" onclick="removeSingleImage(this)">×</div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <button type="button" onclick="removeAllAdditionalImages()" class="remove-image">Xóa tất cả ảnh phụ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Input ẩn sẽ chứa danh sách các ảnh phụ hiện có -->
+            <div id="hiddenImagesContainer">
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    @foreach (var img in Model.Images)
+                    {
+                        <input type="hidden" name="additionalImagesList" value="@img" />
+                    }
+                }
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label">Mô tả sản phẩm</label>
+                        <textarea asp-for="Description" id="editor" class="form-control" rows="6">@Model.Description</textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="dynamicImageInputs"></div>
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Style chung cho các vùng upload */
+        .upload-main-image,
+        .upload-additional-images {
+            margin-top: 20px;
+        }
+
+        .file-upload {
+            background-color: #ffffff;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .file-upload-btn {
+            width: 100%;
+            margin: 0;
+            color: #fff;
+            background: #1FB264;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            border-bottom: 4px solid #15824B;
+            transition: all .2s ease;
+            outline: none;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+            .file-upload-btn:hover {
+                background: #1AA059;
+                color: #ffffff;
+                transition: all .2s ease;
+                cursor: pointer;
+            }
+
+        .file-upload-content {
+            display: none;
+            text-align: center;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            outline: none;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-upload-wrap {
+            margin-top: 20px;
+            border: 4px dashed #1FB264;
+            position: relative;
+            min-height: 150px;
+        }
+
+            .image-upload-wrap:hover,
+            .image-upload-wrap.image-dropping {
+                background-color: #1FB264;
+                border: 4px dashed #ffffff;
+            }
+
+        .image-title-wrap {
+            padding: 0 15px 15px 15px;
+            color: #222;
+        }
+
+        .drag-text {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+        }
+
+            .drag-text h3 {
+                font-weight: 100;
+                color: #15824B;
+                padding: 0;
+                margin: 0;
+            }
+
+        .file-upload-image {
+            max-height: 200px;
+            max-width: 100%;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .remove-image {
+            width: 200px;
+            margin: 10px auto 0;
+            color: #fff;
+            background: #cd4535;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            border-bottom: 4px solid #b02818;
+            transition: all .2s ease;
+            outline: none;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .additional-images-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+            .additional-images-container .image-preview {
+                position: relative;
+                width: 100px;
+                height: 100px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+                .additional-images-container .image-preview img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+                .additional-images-container .image-preview .remove-btn {
+                    position: absolute;
+                    top: 2px;
+                    right: 2px;
+                    background: #cd4535;
+                    color: white;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 12px;
+                    line-height: 1;
+                }
+
+        .remove-image:hover {
+            background: #c13b2a;
+            color: #ffffff;
+            transition: all .2s ease;
+            cursor: pointer;
+        }
+
+
+        .ck-editor__editable_inline {
+            min-height: 350px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
+    <script>
+        // ========== Xử lý ảnh chính ==========
+        let mainImageFile = null;
+
+        // Drag and drop cho ảnh chính
+        $('.upload-main-image .image-upload-wrap').on('dragover', function (e) {
+            e.preventDefault();
+            $(this).addClass('image-dropping');
+        });
+
+        $('.upload-main-image .image-upload-wrap').on('dragleave', function () {
+            $(this).removeClass('image-dropping');
+        });
+
+        $('.upload-main-image .image-upload-wrap').on('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).removeClass('image-dropping');
+
+            const files = e.originalEvent.dataTransfer.files;
+            if (files.length > 0) {
+                readMainImage({ files: [files[0]] }); // Chỉ lấy file đầu tiên
+            }
+        });
+
+        function readMainImage(input) {
+            if (input.files && input.files[0]) {
+                mainImageFile = input.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('.upload-main-image .file-upload-image').attr('src', e.target.result);
+                    $('.upload-main-image .file-upload-content').show();
+                    $('.upload-main-image .image-upload-wrap').hide();
+                };
+
+                reader.readAsDataURL(mainImageFile);
+            }
+        }
+
+        function removeMainImage() {
+            mainImageFile = null;
+            $('.upload-main-image .file-upload-input').val('');
+            $('.upload-main-image .file-upload-content').hide();
+            $('.upload-main-image .image-upload-wrap').show();
+        }
+        // Khởi tạo CKEditor
+        document.addEventListener('DOMContentLoaded', function () {
+            ClassicEditor
+                .create(document.querySelector('#editor'))
+                .then(editor => {
+
+                    console.log('CKEditor 5');
+                })
+                .catch(error => {
+                    console.error('Lỗi CKEditor 5:', error);
+                });
+        });
+        $(document).ready(function () {
+            // CKEDITOR.replace('editor', {
+            //     removePlugins: 'notification'
+            // });
+
+            // Hiển thị ảnh cũ nếu có
+            if ('@(!string.IsNullOrEmpty(Model.Image))' === 'True') {
+                $('.upload-main-image .file-upload-content').show();
+                $('.upload-main-image .image-upload-wrap').hide();
+            }
+
+            if ('@(Model.Images != null && Model.Images.Any())' === 'True') {
+                $('.upload-additional-images .file-upload-content').show();
+                $('.upload-additional-images .image-upload-wrap').hide();
+            }
+        });
+
+        // ========== Xử lý ảnh phụ ==========
+        let additionalImages = [];
+
+        // Khởi tạo với các ảnh cũ từ model
+        @if (Model.Images != null && Model.Images.Any())
+        {
+            foreach (var img in Model.Images)
+            {
+                @:additionalImages.push({
+                @:url: '@img',
+                @:isOld: true
+                @:});
+            }
+        }
+
+            // Hàm xóa từng ảnh
+            function removeSingleImage(element) {
+                const imageContainer = $(element).closest('.image-preview');
+                const imageUrl = imageContainer.data('url');
+
+                // Xóa ảnh khỏi mảng additionalImages
+                const index = additionalImages.findIndex(img => img.url === imageUrl);
+                if (index !== -1) {
+                    additionalImages.splice(index, 1);
+                }
+
+                // Xóa ảnh khỏi giao diện
+                imageContainer.remove();
+
+                // Cập nhật input ẩn
+                updateHiddenImagesInput();
+
+                // Kiểm tra nếu không còn ảnh nào thì ẩn khung hiển thị
+                if ($('#additionalImagesPreview').children().length === 0) {
+                    $('.upload-additional-images .file-upload-content').hide();
+                    $('.upload-additional-images .image-upload-wrap').show();
+                }
+            }
+
+        // Hàm xóa tất cả ảnh phụ
+        function removeAllAdditionalImages() {
+            additionalImages = [];
+            $('#additionalImagesPreview').empty();
+            $('#hiddenImagesContainer').empty();
+
+            $('.upload-additional-images .file-upload-content').hide();
+            $('.upload-additional-images .image-upload-wrap').show();
+        }
+
+        // Khi chọn file bằng input
+        function readAdditionalImages(input) {
+            if (input.files && input.files.length > 0) {
+                Array.from(input.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const imageUrl = e.target.result;
+                        additionalImages.push({
+                            file: file,
+                            url: imageUrl,
+                            isOld: false
+                        });
+
+                        // Thêm ảnh vào preview
+                        $('#additionalImagesPreview').append(`
+                                            <div class="image-preview" data-url="${imageUrl}">
+                                                <img src="${imageUrl}" alt="Ảnh phụ" />
+                                                <div class="remove-btn" onclick="removeSingleImage(this)">×</div>
+                                            </div>
+                                        `);
+
+                        // Cập nhật input ẩn
+                        updateHiddenImagesInput();
+
+                        // Hiển thị khung preview
+                        $('.upload-additional-images .file-upload-content').show();
+                        $('.upload-additional-images .image-upload-wrap').hide();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        // Hàm cập nhật input ẩn chứa danh sách ảnh
+        function updateHiddenImagesInput() {
+            $('#hiddenImagesContainer').empty();
+
+            // Lấy tất cả ảnh đang hiển thị trong preview
+            $('#additionalImagesPreview .image-preview').each(function () {
+                const imageUrl = $(this).data('url');
+                if (imageUrl) {
+                    $('#hiddenImagesContainer').append(
+                        `<input type="hidden" name="additionalImagesList" value="${imageUrl}" />`
+                    );
+                }
+            });
+        }
+
+        // Khi submit form
+        $('form').on('submit', function () {
+            // Xóa input file cũ để không gửi file trực tiếp
+            $('.upload-additional-images .file-upload-input').val('');
+
+            // Nếu có ảnh mới được thêm, chúng ta cần gửi chúng qua FormData
+            const newImages = additionalImages.filter(img => !img.isOld);
+            if (newImages.length > 0) {
+                const formData = new FormData(this);
+
+                newImages.forEach((img, index) => {
+                    formData.append('additionalImages', img.file);
+                });
+
+                // Gửi form bằng AJAX nếu cần
+                // Nếu không, trình duyệt sẽ tự xử lý FormData
+            }
+
+            return true;
+        });
+
+        // Drag and drop cho ảnh phụ
+        $('.upload-additional-images .image-upload-wrap').on('dragover', function (e) {
+            e.preventDefault();
+            $(this).addClass('image-dropping');
+        });
+
+        $('.upload-additional-images .image-upload-wrap').on('dragleave', function () {
+            $(this).removeClass('image-dropping');
+        });
+
+        $('.upload-additional-images .image-upload-wrap').on('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).removeClass('image-dropping');
+
+            const files = e.originalEvent.dataTransfer.files;
+            if (files.length > 0) {
+                readAdditionalImages({ files: files });
+            }
+        });
+    </script>
+}

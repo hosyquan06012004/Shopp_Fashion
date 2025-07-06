@@ -1,0 +1,17 @@
+﻿@model BTL_Mongodb.Models.BusinessModels.Components.CategoryViewComponentModel
+
+<ul class="nice-scroll" tabindex="1" style="overflow-y: hidden; outline: none;">
+    @foreach (var item in Model.Categories)
+    {
+        <li>
+            <a asp-controller="Shop"
+               asp-action="Index"
+               asp-route-categoryId="@item.Id"
+               asp-route-keyword="@Model.Keyword"
+               class="@(Model.CurrentCategoryId == item.Id?.ToString() ? "active" : "")">
+                @item.Name
+                <span>(@(Model.Counts.ContainsKey(item.Id.ToString()) ? Model.Counts[item.Id.ToString()] : 0))</span>
+            </a>
+        </li>
+    }
+</ul>

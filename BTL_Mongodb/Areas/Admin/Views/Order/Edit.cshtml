@@ -1,0 +1,63 @@
+﻿@model BTL_Mongodb.Models.ViewModel.OrderViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa đơn hàng";
+    // Tạo danh sách trạng thái có thể chọn
+    var statusList = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "Pending", Text = "Chờ xử lý", Selected = Model.Status == "Pending" },
+        new SelectListItem { Value = "Processing", Text = "Đang xử lý", Selected = Model.Status == "Processing" },
+        new SelectListItem { Value = "Paid", Text = "Đã thanh toán", Selected = Model.Status == "Paid" },
+        new SelectListItem { Value = "Completed", Text = "Hoàn thành", Selected = Model.Status == "Completed" },
+        new SelectListItem { Value = "Cancelled", Text = "Đã hủy", Selected = Model.Status == "Cancelled" }
+    };
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <!-- Tăng độ rộng lên 8 cột -->
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label asp-for="FullName" class="control-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" asp-items="statusList" class="form-control"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>

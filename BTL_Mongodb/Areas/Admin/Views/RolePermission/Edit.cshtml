@@ -1,0 +1,40 @@
+﻿@model BTL_Mongodb.Models.Role
+
+@{
+    ViewBag.Title = "Sửa Role Mới";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="text-center"> Sửa Role Mới</h2>
+
+           
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-bold"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Nhập tên Role" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-bold"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả về Role..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Lưu Role
+                </button>
+                <a asp-action="Index" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left-circle"></i> Quay lại
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

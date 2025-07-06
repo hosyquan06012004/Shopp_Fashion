@@ -1,0 +1,43 @@
+﻿
+
+<div class="col-lg-3">
+    <div class="shop__sidebar">
+        <div class="shop__sidebar__search">
+           <h4>Danh mục & Thương hiệu</h4>
+        </div>
+        <div class="shop__sidebar__accordion">
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                    <div class="card-heading">
+                        <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                    </div>
+                    <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="shop__sidebar__categories">
+                                <ul class="nice-scroll" tabindex="1" style="overflow-y: hidden; outline: none;">
+                                <vc:categories></vc:categories>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-heading">
+                        <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
+                    </div>
+                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="shop__sidebar__brand">
+                                <ul>                               
+                                    <vc:brands></vc:brands>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>

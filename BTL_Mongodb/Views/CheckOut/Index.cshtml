@@ -1,0 +1,142 @@
+﻿@using BTL_Mongodb.Models.BusinessModels
+@model BTL_Mongodb.Models.ViewModel.CheckoutViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+    ViewData["NameView"] = "Check Out";
+    Layout = "~/Views/Shared/_LayoutChild.cshtml";
+
+    var cart = Context.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
+    var cartTotal = cart.Sum(item => item.Quantity * item.Price);
+}
+
+<section class="checkout spad">
+    <div class="container">
+        <div class="checkout__form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <form asp-action="Index" method="post">
+                <div class="row">
+                    <div class="col-lg-8 col-md-6">
+                        <h6 class="checkout__title">Thông tin thanh toán</h6>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Họ<span>*</span></p>
+                                    <input asp-for="LastName" type="text">
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Tên<span>*</span></p>
+                                    <input asp-for="FirstName" type="text">
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Quốc gia<span>*</span></p>
+                            <input asp-for="Country" type="text">
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Địa chỉ<span>*</span></p>
+                            <input asp-for="Address" type="text" placeholder="Địa chỉ cụ thể">
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                            <input asp-for="Address2" type="text" placeholder="Địa chỉ bổ sung (nếu có)">
+                        </div>
+                        <div class="checkout__input">
+                            <p>Thành phố<span>*</span></p>
+                            <input asp-for="City" type="text">
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Tỉnh/Thành phố<span>*</span></p>
+                            <input asp-for="State" type="text">
+                            <span asp-validation-for="State" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Mã bưu điện<span>*</span></p>
+                            <input asp-for="ZipCode" type="text">
+                            <span asp-validation-for="ZipCode" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Số điện thoại<span>*</span></p>
+                                    <input asp-for="Phone" type="text">
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Email<span>*</span></p>
+                                    <input asp-for="Email" type="text">
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input__checkbox">
+                            <label for="diff-acc">
+                                Ghi chú đơn hàng
+                                <input type="checkbox" id="diff-acc" asp-for="HasNote">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="checkout__input" id="note-section" style="@(Model?.HasNote == true ? "" : "display:none;")">
+                            <p>Ghi chú<span>*</span></p>
+                            <input asp-for="Note" type="text" placeholder="Ghi chú về đơn hàng của bạn...">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="checkout__order">
+                            <h4 class="order__title">Đơn hàng của bạn</h4>
+                            <div class="checkout__order__products">Sản phẩm <span>Tổng</span></div>
+                            <ul class="checkout__total__products">
+                                @foreach (var item in cart)
+                                {
+                                    <li>@item.Quantity x @item.ProductName <span>@((item.Quantity * item.Price).ToString("N0")) đ</span></li>
+                                }
+                            </ul>
+                            <ul class="checkout__total__all">
+                                <li>Tổng cộng <span>@cartTotal.ToString("N0") đ</span></li>
+                            </ul>
+
+                       @*      <div class="checkout__input__checkbox">
+                                <label for="payment">
+                                    Thanh toán khi nhận hàng
+                                    <input type="radio" id="payment" name="PaymentMethod" value="COD" checked>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="checkout__input__checkbox">
+                                <label for="paypal">
+                                    Thanh toán qua Paypal
+                                    <input type="radio" id="paypal" name="PaymentMethod" value="Paypal">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div> *@
+                            <input name="payment" type="submit" class="site-btn" value="Đặt Hàng (COD)" />
+                            <input name="payment" type="submit" class="site-btn" value="Thanh Toán VnPay" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#diff-acc').change(function () {
+                if (this.checked) {
+                    $('#note-section').show();
+                } else {
+                    $('#note-section').hide();
+                }
+            });
+        });
+    </script>
+}

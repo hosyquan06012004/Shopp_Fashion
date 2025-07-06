@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["title"] = "Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">Monthly</span>
+                    <h5>Product</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.ProductCount</h1>
+                    <div class="stat-percent font-bold text-success">@ViewBag.ProductPercent.ToString("0.##")% <i class="fa fa-bolt"></i></div>
+                    <small>Total Product</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-info pull-right">Annual</span>
+                    <h5>Orders</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.OrderCount</h1>
+                    <div class="stat-percent font-bold text-info">@ViewBag.OrderPercent.ToString("0.##")% <i class="fa fa-level-up"></i></div>
+                    <small>Total Orders</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-primary pull-right">Today</span>
+                    <h5>Category</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.CategoryCount</h1>
+                    <div class="stat-percent font-bold text-navy">@ViewBag.CategoryPercent.ToString("0.##")%  <i class="fa fa-level-up"></i></div>
+                    <small>Total Category</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-danger pull-right">Low value</span>
+                    <h5>Brand</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.BrandCount</h1>
+                    <div class="stat-percent font-bold text-danger">@ViewBag.BrandPercent.ToString("0.##")% <i class="fa fa-level-down"></i></div>
+                    <small>Total Brand</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>

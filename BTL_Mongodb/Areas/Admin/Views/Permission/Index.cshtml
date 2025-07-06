@@ -1,0 +1,89 @@
+﻿@model X.PagedList.IPagedList<BTL_Mongodb.Models.Permission>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Danh sách quyền";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-12">
+    <div class="ibox-content">
+        <!-- Form tìm kiếm bên trái, nút thêm bên phải -->
+        <div class="row mb-3">
+            <form asp-action="Index" method="get" class="form-inline w-100 d-flex justify-content-between align-items-center">
+                <div class="col-sm-4">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Tìm theo Module hoặc Action..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-sm btn-primary" type="submit">Tìm kiếm</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-8 text-right">
+                    <a asp-action="Create" class="btn btn-sm btn-success">Thêm quyền mới</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Module</th>
+                        <th>Action</th>
+                        <th>Description</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var perm in Model)
+                        {
+                            <tr>
+                                <td>@perm.Module</td>
+                                <td>@perm.Action</td>
+                                <td>@perm.Description</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@perm.Id" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil-square"></i> Sửa
+                                        </a>
+                                        <a onclick="return confirm('Bạn chắc chắn muốn xóa không')" asp-action="Delete" asp-route-id="@perm.Id" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Xoá
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Không tìm thấy quyền nào.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Phân trang -->
+            <div class="col-md-12 text-right">
+                @Html.PagedListPager(Model,
+                         page => Url.Action("Index", new
+                         {
+                             page,
+                             search = ViewBag.Search
+                         }),
+                         new PagedListRenderOptions
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" },
+                    EllipsesFormat = "…",
+                    LinkToNextPageFormat = "&raquo;",
+                    LinkToPreviousPageFormat = "&laquo;"
+                })
+            </div>
+        </div>
+    </div>
+</div>

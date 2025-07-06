@@ -1,0 +1,120 @@
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList
+@model IPagedList<BTL_Mongodb.Models.ViewModel.OrderViewModel>
+
+@{
+    ViewData["Title"] = "Danh sách đơn hàng";
+    var searchModel = ViewBag.SearchModel as BTL_Mongodb.Models.ViewModel.OrderSearchModel ?? new BTL_Mongodb.Models.ViewModel.OrderSearchModel();
+    var pageSize = ViewBag.PageSize as int? ?? 10;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fa fa-magic"></i>
+        Tìm kiếm đơn hàng
+    </div>
+    <br/>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Tên khách hàng</label>
+                <input type="text" class="form-control" name="CustomerName" value="@searchModel.CustomerName">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Email</label>
+                <input type="text" class="form-control" name="Email" value="@searchModel.Email">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Số điện thoại</label>
+                <input type="text" class="form-control" name="Phone" value="@searchModel.Phone">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Từ ngày</label>
+                <input type="date" class="form-control" name="FromDate" value="@(searchModel.FromDate?.ToString("yyyy-MM-dd"))">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Đến ngày</label>
+                <input type="date" class="form-control" name="ToDate" value="@(searchModel.ToDate?.ToString("yyyy-MM-dd"))">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tổng tiền từ</label>
+                <input type="number" class="form-control" name="MinAmount" value="@searchModel.MinAmount">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tổng tiền đến</label>
+                <input type="number" class="form-control" name="MaxAmount" value="@searchModel.MaxAmount">
+            </div>
+            <br/>
+            <div class="text-right col-md-12">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                <a href="@Url.Action("Index")" class="btn btn-success">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fa fa-shopping-cart"></i>
+        Danh sách đơn hàng
+    </div>
+    <br/>
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.FullName</td>
+                        <td>@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.TotalAmount.ToString("N0") đ</td>
+                        <td>@item.Status</td>
+                        <td>
+                            <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-info btn-sm">Chi tiết</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?');">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="col-md-12 text-right">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new
+                {
+                    page,
+                    pageSize = ViewBag.PageSize,
+                    CustomerName = Context.Request.Query["CustomerName"],
+                    Email = Context.Request.Query["Email"],
+                    Phone = Context.Request.Query["Phone"],
+                    FromDate = Context.Request.Query["FromDate"],
+                    ToDate = Context.Request.Query["ToDate"],
+                    MinAmount = Context.Request.Query["MinAmount"],
+                    MaxAmount = Context.Request.Query["MaxAmount"]
+                }),
+                     new PagedListRenderOptions
+            {
+                LiElementClasses = new[] { "page-item" },
+                PageClasses = new[] { "page-link" },
+                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                MaximumPageNumbersToDisplay = 5
+            })
+        </div>
+    </div>
+</div>

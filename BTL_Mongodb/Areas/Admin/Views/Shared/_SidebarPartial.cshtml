@@ -1,0 +1,161 @@
+﻿<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <span>
+                        <img alt="image" class="img-circle" src="/admin/img/profile_small.jpg" />
+                    </span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                            <span class="block m-t-xs">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <strong class="font-bold">Hello, @User.Identity.Name</strong>
+                                }
+                               
+                            </span> <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="profile.html">Profile</a></li>
+                        <li><a href="contacts.html">Contacts</a></li>
+                        <li><a href="mailbox.html">Mailbox</a></li>
+                        <li class="divider"></li>
+                        <li><a asp-action="Logout" asp-controller="Account">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    IN+
+                </div>
+            </li>
+            <!--Start Sidebar-->
+        
+             <li>
+                <a asp-action="Index" asp-controller="Dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span></a>
+            </li>
+            <li>
+                <a asp-action="Index" asp-controller="Category"><i class="fa fa-diamond"></i> <span class="nav-label">Categories</span></a>
+            </li>
+            <li>
+                <a asp-action="Index" asp-controller="Brand"><i class="fa fa-sitemap"></i> <span class="nav-label">Brands</span></a>
+            </li>
+            <li class="has-submenu">
+                <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Products</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
+                    <li><a asp-action="Index" asp-controller="Product">List products</a></li>
+                    <li><a asp-action="Create" asp-controller="Product">Create a product</a></li>
+                </ul>
+            </li>
+            <li>
+                <a asp-action="Index" asp-controller="Banner"><i class="fa fa-picture-o"></i></i> <span class="nav-label">Banner</span></a>
+            </li>
+            <li>
+                <a asp-action="Index" asp-controller="User"><i class="fa fa-database"></i> <span class="nav-label">Users</span></a>
+            </li>
+            <li>
+                <a asp-action="Index" asp-controller="RolePermission"><i class="fa fa-edit"></i></i> <span class="nav-label">Roles</span></a>
+            </li>
+            <li>
+                <a asp-action="Index" asp-controller="Permission"><i class="fa fa-table"></i></i> <span class="nav-label">Permission</span></a>
+            </li>
+            <li>
+                <a asp-action="Index" asp-controller="Order"><i class="fa fa-shopping-cart"></i></i> <span class="nav-label">Order</span></a>
+            </li>
+         
+            <!--End Sidebar-->
+        </ul>
+    </div>
+</nav>
+
+@section Styles {
+    <style>
+        .nav > li.active > a {
+            background-color: #1ab394;
+            color: white !important;
+        }
+
+        .nav > li.special_link.active > a {
+            background-color: #1ab394;
+            color: white !important;
+        }
+
+        .nav > li > a:hover {
+            background-color: #1ab394;
+            color: white !important;
+        }
+
+        /* Thêm style cho submenu item active */
+        .nav.nav-second-level > li.active > a {
+            background-color: #18a689;
+            color: white !important;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Khởi tạo metisMenu
+            $('#side-menu').metisMenu({
+                toggle: true,
+                activeClass: 'active'
+            });
+
+            // Lấy đường dẫn hiện tại (loại bỏ query string và hash nếu có)
+            var currentPath = window.location.pathname.toLowerCase().split(/[?#]/)[0];
+            console.log('Current path:', currentPath);
+
+            $('#side-menu > li').each(function () {
+                var menuItem = $(this);
+                var link = menuItem.find('> a').attr('href');
+
+                if (!link) return;
+
+                // Kiểm tra menu item không có submenu
+                if (!menuItem.hasClass('has-submenu')) {
+                    var menuPath = link.toLowerCase().split(/[?#]/)[0];
+                    console.log('Checking menu:', menuItem.find('> a').text().trim(), 'Path:', menuPath);
+
+                    // Kiểm tra nếu đường dẫn hiện tại khớp với link menu
+                    if (currentPath === menuPath) {
+                        menuItem.addClass('active');
+                        console.log('Activated menu:', menuItem.find('> a').text().trim());
+                        return false;
+                    }
+                }
+
+                // Kiểm tra các submenu item
+                menuItem.find('ul li a').each(function () {
+                    var subLink = $(this).attr('href');
+                    if (subLink) {
+                        var subMenuPath = subLink.toLowerCase().split(/[?#]/)[0];
+                        console.log('Checking submenu:', $(this).text().trim(), 'Path:', subMenuPath);
+
+                        if (currentPath === subMenuPath) {
+                            menuItem.addClass('active');
+                            $(this).parent().addClass('active');
+                            console.log('Activated submenu:', $(this).text().trim());
+                            return false;
+                        }
+                    }
+                });
+            });
+
+            // Xử lý khi click vào menu item
+            $('#side-menu > li > a').on('click', function (e) {
+                // Nếu là menu có submenu thì không xử lý chuyển trang
+                if ($(this).parent().hasClass('has-submenu')) {
+                    e.preventDefault();
+                }
+
+                // Xóa active class từ tất cả các menu item
+                $('#side-menu > li').removeClass('active');
+                $('#side-menu .nav-second-level > li').removeClass('active');
+
+                // Thêm active class cho menu item được click
+                $(this).parent().addClass('active');
+            });
+        });
+    </script>
+}

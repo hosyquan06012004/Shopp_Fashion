@@ -1,0 +1,277 @@
+﻿@model BTL_Mongodb.Models.ViewModel.ProductViewModel
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Chi tiết sản phẩm: @Model.Name</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <!-- Phần thông tin cơ bản và ảnh -->
+                <div class="row">
+                    <div class="col-md-5">
+                        <!-- Ảnh chính với zoom -->
+                        <div class="text-center" style="margin-bottom: 20px;">
+                            <div class="img-container" style="height: 400px;">
+                                <img id="mainImage" src="@Model.Image" class="img-responsive img-thumbnail"
+                                     style="max-height: 100%; width: 100%; object-fit: contain;">
+                            </div>
+                        </div>
+
+                   
+
+                        <!-- Danh sách ảnh phụ -->
+                        @if (Model.Images != null && Model.Images.Any())
+                        {
+                            <div class="thumbnail-list" style="margin-top: 10px; overflow-x: auto; white-space: nowrap; width: 100%; padding-bottom: 10px;">
+                                @foreach (var image in Model.Images)
+                                {
+                                    <img src="@image" class="thumbnail-img img-thumbnail"
+                                         style="display: inline-block; height: 80px; width: auto; margin-right: 5px; cursor: pointer;"
+                                         onclick="changeMainImage('@image')">
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="table-responsive">
+                            <div class="docs-preview clearfix text-center">
+                                <div class="img-preview img-preview-lg"></div>
+                            </div>
+                            <table class="table table-striped">
+                           
+                                <tbody>
+                                    <tr>
+                                        <td><strong>ID:</strong></td>
+                                        <td>@Model.Id</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tên sản phẩm:</strong></td>
+                                        <td>@Model.Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Giá:</strong></td>
+                                        <td>@Model.Price?.ToString("N0") đ</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Thương hiệu:</strong></td>
+                                        <td>@Model.BrandName</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Thể loại:</strong></td>
+                                        <td>@Model.CategoryName</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ngày tạo:</strong></td>
+                                        <td>@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phần mô tả sản phẩm -->
+                <div class="row" style="margin-top: 30px;">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Mô tả sản phẩm</h3>
+                            </div>
+                            <div class="panel-body" style="min-height: 150px; padding: 20px;">
+                                @if (!string.IsNullOrEmpty(Model.Description))
+                                {
+                                    @Html.Raw(Model.Description.Replace("\n", "<br>"))
+                                }
+                                else
+                                {
+                                    <em>Không có mô tả</em>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nút quay lại -->
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-md-12">
+                        <a asp-action="Index" class="btn btn-default">
+                            <i class="fa fa-arrow-left"></i> Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Style cho ảnh phụ */
+        .thumbnail-img:hover {
+            border-color: #1ab394;
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+        }
+
+        .active-thumbnail {
+            border: 2px solid #1ab394 !important;
+            box-shadow: 0 0 5px rgba(26, 179, 148, 0.5);
+        }
+
+        /* Thanh cuộn ảnh phụ */
+        .thumbnail-list::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .thumbnail-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .thumbnail-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+            .thumbnail-list::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+        /* Panel mô tả */
+        .panel {
+            border: 1px solid #e7eaec;
+            box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        }
+
+        .panel-heading {
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #e7eaec;
+            padding: 10px 15px;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Cropper styles */
+        .img-container,
+        .img-preview {
+            background-color: #f7f7f7;
+            width: 100%;
+            text-align: center;
+        }
+
+        .img-container {
+            margin-bottom: 1rem;
+            position: relative;
+            height: 400px;
+            width: 100%;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mainImage {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .docs-preview {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .img-preview {
+            width: 130px;
+            height: 130px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        .img-preview-lg {
+            width: 130px;
+            height: 130px;
+        }
+
+        .cropper-container {
+            margin: 0 auto;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+
+    <script>
+        var $image = $('#mainImage');
+        var cropper;
+
+        function changeMainImage(newImageUrl) {
+            $('#mainImage').cropper('replace', newImageUrl);
+
+            // Thêm hiệu ứng active cho ảnh được chọn
+            const thumbnails = document.querySelectorAll('.thumbnail-img');
+            thumbnails.forEach(thumb => {
+                thumb.classList.remove('active-thumbnail');
+                if (thumb.src === newImageUrl) {
+                    thumb.classList.add('active-thumbnail');
+                }
+            });
+        }
+        $(document).ready(function () {
+            // Kích hoạt ảnh đầu tiên
+            const firstThumbnail = document.querySelector('.thumbnail-img');
+            if (firstThumbnail) {
+                firstThumbnail.classList.add('active-thumbnail');
+            }
+
+            // Khởi tạo cropper
+            $image.cropper({
+                aspectRatio: 1,
+                viewMode: 3,
+                autoCropArea: 1,
+                responsive: true,
+                preview: '.img-preview',
+                zoomOnWheel: true,
+                wheelZoomRatio: 0.1,
+                cropBoxMovable: false,       // Giữ cố định vùng crop box (OK)
+                cropBoxResizable: false,     // Giữ cố định kích thước crop box (OK)
+                background: false,
+                movable: true,               // ✅ Cho phép DI CHUYỂN ẢNH BÊN TRONG KHUÔN CỐ ĐỊNH
+                scalable: false,
+                zoomable: true,
+                ready: function () {
+                    cropper = $image.data('cropper');
+                }
+            });
+
+
+
+
+            // Nếu resize thì reset lại cropper
+            $(window).resize(function () {
+                if (cropper) {
+                    cropper.reset();
+                }
+            });
+        });
+    </script>
+
+}

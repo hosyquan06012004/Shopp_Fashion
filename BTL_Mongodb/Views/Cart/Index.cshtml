@@ -1,0 +1,152 @@
+﻿@model BTL_Mongodb.Models.ViewModel.CartItemViewModel
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    ViewData["NameView"] = "Cart";
+    Layout = "~/Views/Shared/_LayoutChild.cshtml";
+}
+
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="shopping__cart__table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.CartItems != null && Model.CartItems.Any())
+                            {
+                                @foreach (var item in Model.CartItems)
+                                {
+                                    <tr>
+                                        <td class="product__cart__item">
+                                            <div class="product__cart__item__pic">
+                                                <img width="100px" src="@item.Image" alt="@item.ProductName">
+                                            </div>
+                                            <div class="product__cart__item__text">
+                                                <h6>@item.ProductName</h6>
+                                                <h5>$@item.Price.ToString("N2")</h5>
+                                            </div>
+                                        </td>
+                                        <td class="quantity__item">
+                                            <form asp-action="UpdateQuantity" asp-controller="Cart" method="post" class="quantity-form">
+                                                <input type="hidden" name="id" value="@item.ProductId" />
+                                                <div class="quantity">
+                                                    <div class="custom-qty">
+                                                        <a href="@Url.Action("Decrease", "Cart", new { id = item.ProductId })">
+                                                            <span class="fa fa-minus qtybtn"></span>
+                                                        </a>
+                                                        <input type="number"
+                                                               name="quantity"
+                                                               min="1"
+                                                               value="@item.Quantity"
+                                                               class="quantity-input"
+                                                               onchange="this.form.submit()">
+                                                        <a href="@Url.Action("Increase", "Cart", new { id = item.ProductId })">
+                                                            <span class="fa fa-plus qtybtn"></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </td>
+                                        <td class="cart__price">$@item.Total.ToString("N2")</td>
+                                        <td class="cart__close">
+                                            <a href="@Url.Action("Remove", "Cart", new { id = item.ProductId })"><i class="fa fa-close"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Giỏ hàng trống</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a asp-action="Index" asp-controller="Shop">Tiếp tục mua sắm</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn update__btn">
+                            <a href="@Url.Action("Index", "Cart")"><i class="fa fa-spinner"></i> Cập nhật giỏ hàng</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="cart__discount">
+                    <h6>Mã giảm giá</h6>
+                    <form action="#">
+                        <input type="text" placeholder="Nhập mã giảm giá">
+                        <button type="submit">Áp dụng</button>
+                    </form>
+                </div>
+                <div class="cart__total">
+                    <h6>Tổng giỏ hàng</h6>
+                    <ul>
+                        <li>Tổng tiền <span>$@Model.GrandTotal.ToString("N2")</span></li>
+                        <li>Thành tiền <span>$@Model.GrandTotal.ToString("N2")</span></li>
+                    </ul>
+                    <a href="@Url.Action("Index", "Checkout")" class="primary-btn">Thanh toán</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section styles{
+    <style>
+        .quantity-form {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+
+        .custom-qty input[type="number"] {
+            width: 50px;
+            height: 32px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            -moz-appearance: textfield;
+        }
+
+            .custom-qty input[type="number"]::-webkit-outer-spin-button,
+            .custom-qty input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        .custom-qty {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .custom-qty a {
+                text-decoration: none;
+                font-size: 18px;
+                color: #000;
+                padding: 4px;
+            }
+
+            .custom-qty input {
+                width: 40px;
+                height: 32px;
+                text-align: center;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+    </style>
+
+}

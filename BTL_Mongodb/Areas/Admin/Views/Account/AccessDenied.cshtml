@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "403 - Access Denied";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>403 - Không có quyền truy cập</title>
+    <link rel="icon" type="image/svg" href="~/logo_fashion.jpg" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .error-container {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .error-code {
+            font-size: 100px;
+            color: #dc3545;
+            margin-bottom: 0;
+        }
+
+        .error-message {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .action-button:hover {
+                background-color: #0056b3;
+            }
+
+        .cancel-button {
+            background-color: #6c757d;
+        }
+
+            .cancel-button:hover {
+                background-color: #5a6268;
+            }
+
+        .icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="icon"><i class="fas fa-ban"></i></div>
+        <h1 class="error-code">403</h1>
+        <p class="error-message">Bạn không có quyền truy cập trang này.</p>
+        <div class="button-group">
+            <a class="action-button" asp-controller="Account" asp-action="Login">🔒 Đăng nhập lại Admin</a>
+            <button class="action-button cancel-button" onclick="history.back()">⬅️ Quay lại trang trước</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+﻿@{
+    var permissions = ViewBag.Permissions as List<BTL_Mongodb.Models.Permission>;
+    var assigned = ViewBag.Assigned as List<string>;
+    var role = ViewBag.Role as BTL_Mongodb.Models.Role;
+}
+@{
+    ViewBag.Title = "Gán quyền cho role: " + role?.Name;
+}
+<h2>@ViewBag.Title</h2>
+
+<form asp-action="Assign" method="post">
+    <input type="hidden" name="roleId" value="@role.Id" />
+
+    <div class="form-group">
+        @foreach (var permission in permissions)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       name="permissionIds" value="@permission.Id"
+                @(assigned.Contains(permission.Id) ? "checked" : "") />
+                <label class="form-check-label">@permission.Module - @permission.Action</label>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu quyền</button>
+</form>

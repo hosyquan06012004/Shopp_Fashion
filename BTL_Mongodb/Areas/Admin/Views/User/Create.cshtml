@@ -1,0 +1,41 @@
+﻿@model BTL_Mongodb.Models.ViewModel.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Thêm người dùng";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Thêm người dùng mới</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Username"></label>
+        <input asp-for="Username" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" type="email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Mật khẩu</label>
+        <input type="password" name="Password" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Quyền</label>
+        @foreach (var role in Model.AllRoles)
+        {
+            <div class="form-check">
+                <input type="checkbox" name="SelectedRoleIds" value="@role.Id" class="form-check-input" />
+                <label class="form-check-label">@role.Name</label>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-success">Tạo</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>

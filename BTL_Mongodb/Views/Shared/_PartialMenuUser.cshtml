@@ -1,0 +1,77 @@
+﻿<header class="header">
+    <div class="header__top">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-7">
+                    <div class="header__top__left">
+                        <p>Welcome to my shop (quandev04)</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-5">
+                    <div class="header__top__right">
+                        <div class="header__top__links">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <span style="color:white;">Hello, @User.Identity.Name | </span>
+                                <a asp-controller="AccountUser" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">Logout</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="AccountUser" asp-action="Login">Login</a>
+                                <a asp-controller="AccountUser" asp-action="Register">Register</a>
+                            }
+                          
+                        </div>
+                        <div class="header__top__hover">
+                            <span>Usd <i class="arrow_carrot-down"></i></span>
+                            <ul>
+                                <li>USD</li>
+                                <li>EUR</li>
+                                <li>USD</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="header__logo">
+                    <a asp-action="Index" asp-controller="Home"><img src="/site/img/logo.png" alt=""></a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <nav class="header__menu mobile-menu">
+                    <ul>
+                        <li class="active"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li><a asp-action="Index" asp-controller="Shop">Shop</a></li>
+                        <li>
+                            <a href="#">Pages</a>
+                            <ul class="dropdown">
+                                <li><a asp-action="Index" asp-controller="AboutUs">About Us</a></li>
+                                <li><a asp-action="Index" asp-controller="Cart">Shopping Cart</a></li>
+                                <li><a asp-action="Index" asp-controller="CheckOut">Check Out</a></li>
+                 
+                            </ul>
+                        </li>
+                        <li><a asp-action="Index" asp-controller="Blog">Blog</a></li>
+                        <li><a asp-action="Index" asp-controller="Contact">Contacts</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="header__nav__option">
+                    <a href="#" class="search-switch"><img src="/site/img/icon/search.png" alt=""></a>
+                    <a href="#"><img src="/site/img/icon/heart.png" alt=""></a>
+                    <a href="#"><img src="/site/img/icon/cart.png" alt=""> <span>0</span></a>
+                    <div class="price">$0.00</div>
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open"><i class="fa fa-bars"></i></div>
+    </div>
+
+</header>

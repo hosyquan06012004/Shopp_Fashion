@@ -1,0 +1,99 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<BTL_Mongodb.Models.ViewModel.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-12">
+    <div class="ibox-content">
+        <div class="row">
+            <form asp-action="Index" method="get">
+                <div class="row">
+                    <div class="col-md-2">
+                        <input type="text" name="Name" value="@Context.Request.Query["Name"]" class="form-control" placeholder="Tên sản phẩm" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="Price" value="@Context.Request.Query["Price"]" class="form-control" placeholder="Giá sản phẩm" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="BrandName" value="@Context.Request.Query["BrandName"]" class="form-control" placeholder="Tên thương hiệu" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="CategoryName" value="@Context.Request.Query["CategoryName"]" class="form-control" placeholder="Tên danh mục" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <a asp-action="Create" class="btn btn-success">Thêm mới</a>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Thương hiệu</th>
+                        <th>Danh mục</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int stt = (Model.PageNumber - 1) * Model.PageSize + 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@(stt++)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Image))
+                                {
+                                    <img src="@item.Image" alt="@item.Name" width="80" height="80" />
+                                }
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Price?.ToString("N0") đ</td>
+                            <td>@item.BrandName</td>
+                            <td>@item.CategoryName</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
+                                <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-success btn-sm">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Phân trang -->
+            <div class="col-md-12 text-right">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new
+                    {
+                        page,
+                        pageSize = ViewBag.PageSize,
+                        Name = Context.Request.Query["Name"],
+                        Price = Context.Request.Query["Price"],
+                        BrandName = Context.Request.Query["BrandName"],
+                        CategoryName = Context.Request.Query["CategoryName"]
+                    }),
+                         new PagedListRenderOptions
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" }
+                })
+            </div>
+
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,67 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<BTL_Mongodb.Models.Banner>
+
+@{
+    ViewData["Title"] = "Danh sách Banner";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="ibox-content">
+    <div class="row">
+        <form asp-action="Index" method="get">
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <input type="text" name="searchString" value="@ViewBag.SearchString" placeholder="Tìm kiếm..." class="form-control" />
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary">Tìm</button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-8 text-right">
+                <a asp-action="Create" class="btn btn-primary">Thêm mới</a>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>H1</th>
+                <th>H6</th>
+                <th>P</th>
+                <th>Image</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int stt = 1;
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@(stt++)</td>
+                    <td>@item.H1</td>
+                    <td>@item.H6</td>
+                    <td>@item.P</td>
+                    <td><img src="@item.Image" width="100" /></td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-right">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewBag.SearchString, pageSize = ViewBag.PageSize }),
+                 new PagedListRenderOptions
+        {
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
+    </div>
+</div>

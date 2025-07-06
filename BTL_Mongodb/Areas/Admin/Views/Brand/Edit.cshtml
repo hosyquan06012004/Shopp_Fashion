@@ -1,0 +1,222 @@
+﻿@model BTL_Mongodb.Models.Brand
+@using BTL_Mongodb.Models.BusinessModels.ImplementModels
+
+@{
+    ViewData["Title"] = "Thêm mới thương hiệu";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-12">
+    <div class="ibox-content">
+        <h2 class="text-center">Cập nhập thương hiệu</h2>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+            @* Hiển thị lỗi tổng hợp nếu có *@
+            @* <div asp-validation-summary="All" class="text-danger"></div> *@
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Tên thương hiệu</label>
+                <input asp-for="Name" class="form-control" placeholder="Nhập tên thương hiệu..." />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CreatedAt" class="control-label">Ngày tạo</label>
+                <input asp-for="CreatedAt" type="date" class="form-control" />
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+
+            @* Upload Ảnh Thương Hiệu *@
+            <div class="upload-brand-image">
+                <label class="control-label">Ảnh thương hiệu</label>
+                <div class="file-upload">
+                    <button class="file-upload-btn" type="button" onclick="$('.upload-brand-image .file-upload-input').trigger('click')">Add Image</button>
+
+                    <div class="image-upload-wrap">
+                        <input name="image" class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" />
+                        <div class="drag-text">
+                            <h3>Drag and drop a file or select Add Image</h3>
+                        </div>
+                    </div>
+
+                    <div class="file-upload-content">
+                        <img class="file-upload-image" src="@(string.IsNullOrEmpty(Model.Logo) ? "#" : Model.Logo)" alt="your image" />
+
+
+                        <div class="image-title-wrap">
+                            <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Logo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group text-right mt-3">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .upload-brand-image {
+            margin-top: 20px;
+        }
+
+            .upload-brand-image .file-upload {
+                background-color: #ffffff;
+                width: 100%;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .upload-brand-image .file-upload-btn {
+                width: 100%;
+                margin: 0;
+                color: #fff;
+                background: #1FB264;
+                border: none;
+                padding: 10px;
+                border-radius: 4px;
+                border-bottom: 4px solid #15824B;
+                transition: all .2s ease;
+                outline: none;
+                text-transform: uppercase;
+                font-weight: 700;
+            }
+
+                .upload-brand-image .file-upload-btn:hover {
+                    background: #1AA059;
+                    color: #ffffff;
+                    transition: all .2s ease;
+                    cursor: pointer;
+                }
+
+            .upload-brand-image .file-upload-content {
+                display: none;
+                text-align: center;
+            }
+
+            .upload-brand-image .file-upload-input {
+                position: absolute;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                outline: none;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            .upload-brand-image .image-upload-wrap {
+                margin-top: 20px;
+                border: 4px dashed #1FB264;
+                position: relative;
+            }
+
+                .upload-brand-image .image-upload-wrap:hover,
+                .upload-brand-image .image-upload-wrap.image-dropping {
+                    background-color: #1FB264;
+                    border: 4px dashed #ffffff;
+                }
+
+            .upload-brand-image .image-title-wrap {
+                padding: 0 15px 15px 15px;
+                color: #222;
+            }
+
+            .upload-brand-image .drag-text {
+                text-align: center;
+            }
+
+                .upload-brand-image .drag-text h3 {
+                    font-weight: 100;
+                    text-transform: uppercase;
+                    color: #15824B;
+                    padding: 60px 0;
+                }
+
+            .upload-brand-image .file-upload-image {
+                max-height: 200px;
+                max-width: 200px;
+                margin: auto;
+                padding: 20px;
+            }
+
+            .upload-brand-image .remove-image {
+                width: 200px;
+                margin: 0 auto;
+                color: #fff;
+                background: #cd4535;
+                border: none;
+                padding: 10px;
+                border-radius: 4px;
+                border-bottom: 4px solid #b02818;
+                transition: all .2s ease;
+                outline: none;
+                text-transform: uppercase;
+                font-weight: 700;
+            }
+
+                .upload-brand-image .remove-image:hover {
+                    background: #c13b2a;
+                    color: #ffffff;
+                    transition: all .2s ease;
+                    cursor: pointer;
+                }
+    </style>
+}
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Nếu có logo, hiển thị luôn ảnh cũ
+            var hasLogo = '@(string.IsNullOrEmpty(Model.Logo) ? "false" : "true")';
+            if (hasLogo === "true") {
+                $('.upload-brand-image .image-upload-wrap').hide();
+                $('.upload-brand-image .file-upload-content').show();
+            }
+
+            // Các hàm đọc ảnh
+            $('.upload-brand-image .file-upload-input').on('change', function () {
+                readURL(this);
+            });
+
+            $('.upload-brand-image .image-upload-wrap').on('dragover', function () {
+                $(this).addClass('image-dropping');
+            });
+
+            $('.upload-brand-image .image-upload-wrap').on('dragleave', function () {
+                $(this).removeClass('image-dropping');
+            });
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.upload-brand-image .image-upload-wrap').hide();
+                    $('.upload-brand-image .file-upload-image').attr('src', e.target.result);
+                    $('.upload-brand-image .file-upload-content').show();
+                    $('.upload-brand-image .image-title').html(input.files[0].name);
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                removeUpload();
+            }
+        }
+
+        function removeUpload() {
+            var cloneInput = $('.upload-brand-image .file-upload-input').clone();
+            $('.upload-brand-image .file-upload-input').replaceWith(cloneInput);
+            $('.upload-brand-image .file-upload-content').hide();
+            $('.upload-brand-image .image-upload-wrap').show();
+
+            cloneInput.on('change', function () {
+                readURL(this);
+            });
+        }
+    </script>
+}

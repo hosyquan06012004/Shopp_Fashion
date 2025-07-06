@@ -1,0 +1,17 @@
+﻿@model BTL_Mongodb.Models.BusinessModels.Components.BrandViewComponentModel
+
+<ul>
+    @foreach (var item in Model.Brands)
+    {
+        <li>
+            <a asp-controller="Shop"
+               asp-action="Index"
+               asp-route-brandId="@item.Id"
+               asp-route-keyword="@Model.Keyword"
+               class="@(Model.CurrentBrandId == item.Id?.ToString() ? "active" : "")">
+                @item.Name
+                <span>(@(Model.Counts.ContainsKey(item.Id.ToString()) ? Model.Counts[item.Id.ToString()] : 0))</span>
+            </a>
+        </li>
+    }
+</ul>

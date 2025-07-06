@@ -1,0 +1,218 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<BTL_Mongodb.Models.ViewModel.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Trang chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ <!-- Product Section Begin -->
+<section class="product spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4 id="product-list" class="text-center">Danh sách sản phẩm</h4>
+                <br />
+                <br />
+                <form method="get" asp-action="Index" id="searchForm" class="row">
+                    <div class="col-md-8">
+                        <input type="text" name="keyword" value="@ViewBag.Keyword" 
+                               class="form-control" placeholder="Nhập tên sản phẩm..." />
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn w-100" style="background-color: #111111; color: white;">Tìm kiếm</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <div class="row product__filter" id="product-list">
+            @if (Model.Any())
+        {
+            foreach (var product in Model)
+            {
+
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
+                        <div class="product__item sale">
+                            <div class="product__item__pic set-bg" data-setbg="@product.Image" style="background-image: url('@product.Image');">
+                                <span class="label">Sale</span>
+                                <ul class="product__hover">
+                                    <li><a asp-action="Detail" asp-controller="Home" asp-route-id="@product.Id"><img src="/site/img/icon/search.png" alt=""></a></li>
+                                </ul>
+                            </div>
+
+                            <div class="product__item__text">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">@product.Name</h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star-o"></i>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <small class="d-block category-name">@product.CategoryName</small>
+                                        <small class="d-block brand-name">@product.BrandName</small>
+
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <a asp-action="Add" asp-controller="Cart" asp-route-id="@product.Id" class="add-cart">+ Add To Cart</a>
+                                    <h5 class="mb-0">@product.Price?.ToString("N0") đ</h5>
+                                </div>
+
+                                <div class="product__color__select mt-2">
+                                    <label for="pc-7">
+                                        <input type="radio" id="pc-7">
+                                    </label>
+                                    <label class="active black" for="pc-8">
+                                        <input type="radio" id="pc-8">
+                                    </label>
+                                    <label class="grey" for="pc-9">
+                                        <input type="radio" id="pc-9">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <h4>Không tìm thấy sản phẩm phù hợp</h4>
+                </div>
+            }
+
+           
+        </div>
+        @if (Model.PageCount > 1)
+        {
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new
+                        {
+                            page,
+                            keyword = ViewBag.Keyword
+                        }), new PagedListRenderOptions
+           {
+               LiElementClasses = new[] { "page-item" },
+               PageClasses = new[] { "page-link" }
+           })
+                </div>
+            </div>
+        }
+
+    </div>
+ </div>
+</section>
+@section styles {
+    <style>
+        .page-link {
+            background-color: #111111;
+            color: white;
+            border: 1px solid #111111;
+        }
+
+            .page-link:hover {
+                background-color: #333333;
+                color: white;
+            }
+
+        .page-item.active .page-link {
+            background-color: black;
+            border-color: black;
+            color: white;
+        }
+
+
+        /* brandname và categoryname */
+        .category-name, .brand-name {
+            color: #333; /* Màu đen nhẹ */
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .brand-name {
+            margin-top: 2px;
+            font-style: italic;
+            color: #555; /* Màu hơi xám để phân biệt */
+        }
+
+    </style>
+
+}
+
+@section scripts {
+    <script>
+        document.querySelectorAll('.add-cart').forEach(link => {
+            link.addEventListener('click', () => {
+                localStorage.setItem('scrollToProductList', 'true');
+            });
+        });
+
+        // Khi trang load lại sau Add To Cart, nếu có cờ thì cuộn xuống
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('scrollToProductList') === 'true') {
+                const target = document.getElementById('product-list');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                localStorage.removeItem('scrollToProductList');
+            }
+        });
+
+        // Khi form tìm kiếm được submit, thêm hash để cuộn đến danh sách sản phẩm
+        document.getElementById('searchForm').addEventListener('submit', function (e) {
+            const form = e.target;
+            const keyword = form.querySelector('[name="keyword"]').value;
+            const url = new URL(window.location.origin + "@Url.Action("Index")");
+            if (keyword) {
+                url.searchParams.set("keyword", keyword);
+            }
+            url.hash = "product-list";
+            window.location.href = url.toString();
+            e.preventDefault();
+        });
+
+        // Khi trang được load lại, nếu có #product-list thì cuộn đến thẻ H4
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.location.hash === "#product-list") {
+                const heading = document.getElementById('product-list');
+                if (heading) {
+                    heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // Gắn hash #product-list vào link phân trang
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".pagination a").forEach(link => {
+                const url = new URL(link.href);
+                url.hash = "product-list";
+                link.href = url.toString();
+            });
+        });
+
+        // Khi trang được load lại với #product-list thì cuộn tới tiêu đề
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.location.hash === "#product-list") {
+                const heading = document.getElementById('product-list');
+                if (heading) {
+                    heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    </script>
+
+}
+

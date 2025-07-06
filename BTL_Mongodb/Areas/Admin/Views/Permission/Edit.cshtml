@@ -1,0 +1,28 @@
+﻿@model BTL_Mongodb.Models.Permission
+
+@{
+    ViewData["Title"] = "Chỉnh sửa quyền";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label>Module</label>
+        <input asp-for="Module" class="form-control" />
+        <span asp-validation-for="Module" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Action</label>
+        <input asp-for="Action" class="form-control" />
+        <span asp-validation-for="Action" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

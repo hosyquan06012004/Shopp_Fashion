@@ -1,0 +1,87 @@
+﻿@model X.PagedList.IPagedList<BTL_Mongodb.Models.ViewModel.UserViewModel>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Danh sách tài khoản";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-12">
+    <div class="ibox-content">
+
+
+
+        <!-- Form tìm kiếm bên trái, nút thêm bên phải -->
+        <div class="row mb-3">
+            <form asp-action="Index" method="get" class="form-inline w-100 d-flex justify-content-between align-items-center">
+                <div class="col-sm-4">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Tìm theo Username..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-sm btn-primary" type="submit">Tìm kiếm</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-8 text-right">
+                    <a asp-action="Create" class="btn btn-sm btn-success">Thêm người dùng</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Username</td>
+                                <td>@user.Email</td>
+                                <td>@string.Join(", ", user.Roles)</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-warning">Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@user.Id" onclick="return confirm('Bạn có chắc muốn xoá?')" class="btn btn-sm btn-danger">Xoá</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Không tìm thấy người dùng nào.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Phân trang -->
+            <div class="col-md-12 text-right">
+                @Html.PagedListPager(Model,
+                         page => Url.Action("Index", new
+                         {
+                             page,
+                             search = ViewBag.Search
+                         }),
+                         new PagedListRenderOptions
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" },
+                    EllipsesFormat = "…",
+                    LinkToNextPageFormat = "&raquo;",
+                    LinkToPreviousPageFormat = "&laquo;"
+                })
+            </div>
+        </div>
+
+    </div>
+</div>

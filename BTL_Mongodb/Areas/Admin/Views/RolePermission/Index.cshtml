@@ -1,0 +1,89 @@
+﻿@model X.PagedList.IPagedList<BTL_Mongodb.Models.Role>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Danh sách Roles";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-12">
+    <div class="ibox-content">
+        <!-- Form tìm kiếm bên trái, nút thêm bên phải -->
+        <div class="row mb-3">
+            <form asp-action="Index" method="get" class="form-inline w-100 d-flex justify-content-between align-items-center">
+                <div class="col-sm-4">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Tìm theo tên Role..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-sm btn-primary" type="submit">Tìm kiếm</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-8 text-right">
+                    <a asp-action="Create" class="btn btn-sm btn-success">Thêm Role</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Tên Role</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var role in Model)
+                        {
+                            <tr>
+                                <td>@role.Name</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil-square"></i> Sửa
+                                        </a>
+                                        <a onclick="return confirm('Bạn chắc chắn muốn xóa không')" asp-action="Delete" asp-route-id="@role.Id" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Xoá
+                                        </a>
+                                        <a class="btn btn-sm btn-primary"
+                                           href="@Url.Action("Assign", "RolePermission", new { area = "Admin", id = role.Id })">
+                                            <i class="bi bi-shield-lock"></i> Gán quyền
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">Không tìm thấy Role nào.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Phân trang -->
+            <div class="col-md-12 text-right">
+                @Html.PagedListPager(Model,
+                         page => Url.Action("Index", new
+                         {
+                             page,
+                             search = ViewBag.Search
+                         }),
+                         new PagedListRenderOptions
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" },
+                    EllipsesFormat = "…",
+                    LinkToNextPageFormat = "&raquo;",
+                    LinkToPreviousPageFormat = "&laquo;"
+                })
+            </div>
+        </div>
+    </div>
+</div>
