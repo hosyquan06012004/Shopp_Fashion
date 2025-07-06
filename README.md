@@ -5,12 +5,12 @@
    2. cài đặt mongodb: mongod server, mongoshell, mongodb database tool và cài đặt biến môi trường     
       + restore file database mongodb : với  thư muc dbs_mongodb\DB_BTL_Mongodb VD:
       + mongorestore --db DB_BTL_Mongodb "D:\dbs_mongodb\DB_BTL_Mongodb"
-      ở file appsetting.json  kiểm tra và sửa đổi nếu cần.
+      + ở file appsetting.json  kiểm tra và sửa đổi nếu cần.
         "MongoDbSettings": {
            "ConnectionString": "mongodb://127.0.0.1:27017",
            "DatabaseName": "DB_BTL_Mongodb"
          },
-       - mở cmd lên chạy lệnh mongod
+       + mở cmd lên chạy lệnh mongod
    4. Chạy project: mở terminal trong thư mục project chạy lệnh:
        dotnet restore.
        dotnet run.
