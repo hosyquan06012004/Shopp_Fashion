@@ -34,7 +34,11 @@
        ![image](https://github.com/user-attachments/assets/127f1e0d-e0ad-4f31-9a88-7085596c0e30)
    
        ![image](https://github.com/user-attachments/assets/69bad5c1-8eaf-4f3e-8e98-be1717ee28e2)
-   
+       CÓ THỂ ĐĂNG NHẬP BẰNG GOOGLE
+       ![image](https://github.com/user-attachments/assets/ebcba87b-97c4-433b-861f-6f8e73559a36)
+      
+       ![image](https://github.com/user-attachments/assets/1e017798-5152-495b-92e3-ed72ab439bd5)
+
        ![image](https://github.com/user-attachments/assets/2c0b0f6b-1c5d-42d9-93d3-3f5759908cb6)
        
        ![image](https://github.com/user-attachments/assets/7aa30f7f-dc67-4355-8189-aa18636cd73a)
