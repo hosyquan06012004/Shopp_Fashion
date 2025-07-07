@@ -1,5 +1,5 @@
 ----- HƯỠNG DẪN SỬ DỤNG - CHẠY PROJECT LẦN ĐẦU - THAM KHẢO HÌNH ẢNH PHÍA DƯỚI ------
-*CÔNG NGHỆ SỬ DỤNG CHÍNH: .Net, Mongodb, Frontend cơ bản và jquery 
+* CÔNG NGHỆ SỬ DỤNG CHÍNH: .Net, Mongodb, Frontend cơ bản và jquery 
 
 * hưỡng dẫn chạy trang web đầu tiên. 
    1. download và mở project
